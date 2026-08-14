@@ -33,6 +33,18 @@ Two CSV files are used:
 
 These datasets are processed to construct the graph and its corresponding adjacency matrix.
 
+**Tools & Libraries:**
+
+* Python 3
+* NumPy
+* Pandas
+* Jupyter Notebook
+
+**Concepts Applied:**
+
+* Graph Theory
+* Linear Algebra
+
 ## Project Structure
 
 The project is contained in a Jupyter Notebook (`.ipynb`) with two main cells.
@@ -68,28 +80,12 @@ destination_test = "Ciutat Meridiana"
 The program repeatedly computes powers of the adjacency matrix until a connection is found. The output will look similar to this:
 
 ```text
-Origin Station: Mas Blau (ID: 104)
-Destination Station: Ciutat Meridiana (ID: 32)
--> The SHORTEST route has a length of: 24 sections (stops).
+Origin Station: Mas Blau (ID: 107)
+Destination Station: Ciutat Meridiana (ID: 136)
+-> The shortest route has a length of: 28 sections (stops).
 -> There is/are 2 different path(s) that allow this shortest trip.
-
 ```
 
-*(Note: IDs, lengths, and path counts will depend on the exact dataset loaded).*
-
-## Technologies & Concepts
-
-**Tools & Libraries:**
-
-* Python 3
-* NumPy
-* Pandas
-* Jupyter Notebook
-
-**Concepts Applied:**
-
-* Graph Theory
-* Linear Algebra
 
 ## Limitations
 
