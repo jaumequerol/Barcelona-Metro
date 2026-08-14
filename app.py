@@ -2,66 +2,63 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# 1. Títol i descripció de la web
-st.title("🚇 Calculadora de Rutes: Metro de Barcelona")
-st.write("Calcula la distància més curta entre dues estacions utilitzant matrius d'adjacència.")
+st.title("Route Calculator: Barcelona Metro")
+st.write("Calculate the shortest distance between two stations using adjacency matrices.")
 
-# 2. Carregar les dades (utilitzem cache perquè la matriu no es calculi cada cop que toquem un botó)
 @st.cache_data
-def prepara_matriu():
-    estacions_df = pd.read_csv('estacions.csv')
-    trams_df = pd.read_csv('trams_linia_metro.csv')
+def prepare_matrix():
+    stations_df = pd.read_csv('stations.csv')
+    sections_df = pd.read_csv('metro_line.csv')
     
-    noms_estacions = estacions_df['NOM_ESTACIO'].str.strip().unique()
-    estacio_a_id = {nom: i for i, nom in enumerate(noms_estacions)}
+    station_names = stations_df['NOM_ESTACIO'].str.strip().unique()
+    station_to_id = {name: i for i, name in enumerate(station_names)}
     
-    N = len(noms_estacions)
+    N = len(station_names)
     A = np.zeros((N, N), dtype=int)
     
-    for index, row in trams_df.iterrows():
-        origen = str(row['NOM_ESTACIO_INI']).strip()
-        desti = str(row['NOM_ESTACIO_FI']).strip()
-        if origen != "Inici" and desti != "Final":
-            if origen in estacio_a_id and desti in estacio_a_id:
-                i = estacio_a_id[origen]
-                j = estacio_a_id[desti]
+    for index, row in sections_df.iterrows():
+        origin = str(row['NOM_ESTACIO_INI']).strip()
+        destination = str(row['NOM_ESTACIO_FI']).strip()
+        if origin != "Inici" and destination != "Final":
+            if origin in station_to_id and destination in station_to_id:
+                i = station_to_id[origin]
+                j = station_to_id[destination]
                 A[i, j] = 1
                 A[j, i] = 1
                 
-    return estacio_a_id, noms_estacions, A
+    return station_to_id, station_names, A
 
-estacio_a_id, noms_estacions, A = prepara_matriu()
+station_to_id, station_names, A = prepare_matrix()
 
-# 3. La teva funció matemàtica
-def troba_recorregut_mes_curt(origen_nom, desti_nom, matriu_A, diccionari):
-    i = diccionari[origen_nom]
-    j = diccionari[desti_nom]
-    if i == j: return 0, 1
+def find_shortest_path(origin_name, destination_name, matrix_A, mapping_dict):
+    i = mapping_dict[origin_name]
+    j = mapping_dict[destination_name]
+    if i == j:
+        return 0, 1
         
-    M = matriu_A.copy()
+    M = matrix_A.copy()
     k = 1
-    N_nodes = matriu_A.shape[0]
+    num_nodes = matrix_A.shape[0]
     
-    while M[i, j] == 0 and k < N_nodes:
+    while M[i, j] == 0 and k < num_nodes:
         k += 1
-        M = M @ matriu_A
+        M = M @ matrix_A
         
     if M[i, j] > 0:
         return k, M[i, j]
     else:
         return -1, 0
 
-# 4. Interfície d'usuari (Desplegables i botons)
-origen = st.selectbox("📍 Selecciona l'estació d'origen:", noms_estacions)
-desti = st.selectbox("🏁 Selecciona l'estació de destí:", noms_estacions)
+origin = st.selectbox("📍 Select the origin station:", station_names)
+destination = st.selectbox("🏁 Select the destination station:", station_names)
 
-if st.button("Calcula el recorregut"):
-    k_min, num_recorreguts = troba_recorregut_mes_curt(origen, desti, A, estacio_a_id)
+if st.button("Calculate route"):
+    k_min, num_routes = find_shortest_path(origin, destination, A, station_to_id)
     
     if k_min == -1:
-        st.error("❌ No s'ha trobat cap connexió entre aquestes estacions.")
+        st.error("No connection found between these stations.")
     elif k_min == 0:
-        st.info("Ja ets a l'estació de destí!")
+        st.info("You are already at the destination station!")
     else:
-        st.success(f"✅ El recorregut més curt té **{k_min} parades**.")
-        st.write(f"S'han detectat **{num_recorreguts}** rutes diferents amb aquesta mateixa llargada.")
+        st.success(f"The shortest route has **{k_min} stops**.")
+        st.write(f"Found **{num_routes}** different routes with this same length.")
