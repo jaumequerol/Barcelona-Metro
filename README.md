@@ -50,29 +50,44 @@ The origin and destination stations can be selected by modifying the following v
 ```python
 origin_test = "Mas Blau"
 destination_test = "Ciutat Meridiana"
+
 ```
 
 After running the cell, the algorithm calculates the minimum number of sections required to travel between the two stations. It also determines the number of distinct walks with that same minimum length.
 
-## Example
+## Example Output
 
-For example, the following configuration can be used:
+By setting the variables to the following stations:
 
 ```python
 origin_test = "Mas Blau"
 destination_test = "Ciutat Meridiana"
+
 ```
 
-The program then repeatedly computes powers of the adjacency matrix until a connection between the two selected stations is found.
+The program repeatedly computes powers of the adjacency matrix until a connection is found. The output will look similar to this:
 
-The exponent of the first non-zero matrix entry gives the minimum number of sections between the origin and destination.
+```text
+Origin Station: Mas Blau (ID: 104)
+Destination Station: Ciutat Meridiana (ID: 32)
+-> The SHORTEST route has a length of: 24 sections (stops).
+-> There is/are 2 different path(s) that allow this shortest trip.
 
-## Technologies
+```
+
+*(Note: IDs, lengths, and path counts will depend on the exact dataset loaded).*
+
+## Technologies & Concepts
+
+**Tools & Libraries:**
 
 * Python 3
 * NumPy
 * Pandas
 * Jupyter Notebook
+
+**Concepts Applied:**
+
 * Graph Theory
 * Linear Algebra
 
